@@ -4,3 +4,4 @@ __pycache__
 *.pyc
 venv/
 database/dummydata.py
+.cache

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-scopes = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public'
+scopes = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public ugc-image-upload'
 
 
 CLIENT_ID = os.getenv("CLIENT_ID")
