@@ -2,22 +2,18 @@ from fastapi import APIRouter, HTTPException, Request, Response
 from utils.firebase import db
 from database.models.playlist import Playlist
 from pydantic import BaseModel
-from database.dummydata import dummy_songs
 from utils import spotify
 from fastapi.responses import JSONResponse
 import spotipy
 from typing import Optional 
 import base64
 from utils.ai_model import AIModel
+from database.models.user import User
    
 class Song(BaseModel):
     title: str
     artist: str
     
-class Tracks(BaseModel):
-    tracks: list[Song]
-        
-
 class PlaylistInput(BaseModel):
     name: str
     artist: str
@@ -32,7 +28,7 @@ router = APIRouter()
 
 # Process query string, feed into langchain, get list of tracks.
 @router.post("/search")
-def show_playlist(tracks: Tracks, request: Request, response: Response):
+def show_playlist(prompt: str, request: Request, response: Response):
     access_token = request.cookies.get("access_token")
     refresh_token = request.cookies.get("refresh_token")
     
@@ -41,27 +37,52 @@ def show_playlist(tracks: Tracks, request: Request, response: Response):
     
     sp = spotify.get_spotify_client(access_token) 
     
-    tracks = [track.model_dump() for track in tracks.tracks] 
+    # use sp instance to get current user, use that id to get users quiz answers.
+    try:
+        current_user = sp.me()
+    except spotipy.exceptions.SpotifyException as e:
+        if e.http_status == 401: 
+            new_token = spotify.refresh_token(refresh_token)
+            if not new_token:
+                raise HTTPException(status_code=400, detail="Authentication required, login again")
 
+            response.set_cookie(key="access_token", value=new_token['access_token'])
+            response.set_cookie(key="refresh_token", value=new_token['refresh_token'])
+            sp = spotify.get_spotify_client(new_token["access_token"]) 
+
+            current_user = sp.me()
+    
+    current_user_id = current_user["id"]
+    user_info: User = db.collection("users").document(current_user_id).get()
+    
+    if not user_info.exists:
+        raise HTTPException(status_code=400, detail="User not found")
+    else:
+        user = User.from_dict(user_info.to_dict())
+        quiz_answers = user.quiz_answers
+        
+    try:
+        model = AIModel(quiz_answers, prompt)
+        playlist_tracks = model.get_playlist()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Error getting playlist from AI model")
+    
+    gen_playlist = playlist_tracks["playlist"]
+    gen_description = playlist_tracks["description"]
+        
     playlist_tracks = []
     
-    for track in tracks:
+    for track in gen_playlist:
         search_query = f"track:{track['title']} artist:{track['artist']}"
         
         try:
             searched_track = sp.search(q=search_query, limit=1, type="track")  
             
         except spotipy.exceptions.SpotifyException as e:
-            if e.http_status == 401: 
-                new_token = spotify.refresh_token(refresh_token)
-                if not new_token:
-                    raise HTTPException(status_code=400, detail="Authentication required, login again")
-
-                response.set_cookie(key="access_token", value=new_token['access_token'])
-                response.set_cookie(key="refresh_token", value=new_token['refresh_token'])
-                sp = spotify.get_spotify_client(new_token["access_token"]) 
-
-                searched_track = sp.search(q=search_query, limit=1, type="track") 
+            raise HTTPException(status_code=400, detail="Error searching for track")
+      
+        if not searched_track:
+            continue
         
         if searched_track and searched_track["tracks"]["items"]:
             track_model = {
@@ -73,7 +94,7 @@ def show_playlist(tracks: Tracks, request: Request, response: Response):
             }
             playlist_tracks.append(track_model) 
     
-    return JSONResponse(content={"message": "Playlist created successfully", "songs": playlist_tracks})
+    return JSONResponse(content={"songs": playlist_tracks, "description": gen_description})
 
 # create the actual paylist
 @router.post("/create")
