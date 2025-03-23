@@ -66,7 +66,7 @@ def show_playlist(prompt: str, request: Request, response: Response):
         playlist_tracks = model.get_playlist()
     except Exception as e:
         raise HTTPException(status_code=400, detail="Error getting playlist from AI model")
-    
+      
     gen_playlist = playlist_tracks["playlist"]
     gen_description = playlist_tracks["description"]
         

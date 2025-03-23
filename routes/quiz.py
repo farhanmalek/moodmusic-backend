@@ -5,8 +5,8 @@ from pydantic import BaseModel
 
 class QuizResponse(BaseModel):
     user_id: str
-    genres: list[str]
-    mood: str
+    language: str
+    time_period: str
     listening_preference: list[str]
     artists: list[str]
 
@@ -26,8 +26,8 @@ def create_quiz(quiz: QuizResponse):
         raise HTTPException(status_code=400, detail="User already has a quiz")
     
     quiz_obj = Quiz(
-        genres=quiz.genres,
-        mood=quiz.mood,
+        language=quiz.language,
+        time_period=quiz.time_period,
         listening_preference=quiz.listening_preference,
         artists=quiz.artists
     )

@@ -21,41 +21,56 @@ class AIModel:
             model_name="meta-llama/llama-3.3-70b-instruct:free",
             base_url="https://openrouter.ai/api/v1",
             api_key=self.api_key,
-            temperature=0,
+            temperature=0.7,
         )
 
     def get_playlist(self):
         # Ensure quiz_answers has the required attributes
         try:
-            genres = ', '.join(self.quiz_answers["genres"]) if self.quiz_answers["genres"] else "Unknown"
-            artists = ', '.join(self.quiz_answers["artists"]) if self.quiz_answers["artists"] else "Unknown"
-            listening_pref = ', '.join(self.quiz_answers["listening_preference"]) if self.quiz_answers["listening_preference"] else "Unknown"
+            language = ', '.join(self.quiz_answers["language"]) if self.quiz_answers.get("language") else "Any"
+            time_period = self.quiz_answers.get("time_period", "Any")
+            listening_pref = ', '.join(self.quiz_answers["listening_preference"]) if self.quiz_answers.get("listening_preference") else "Any"
+            artists = ', '.join(self.quiz_answers["artists"]) if self.quiz_answers.get("artists") else "Any"
             
         except AttributeError as e:
             raise ValueError(f"Invalid quiz_answers object: {e}")
-
+    
+        # Prepare messages
         messages = [
-            SystemMessage(content="You are a music expert. Based on the given prompt, suggest a playlist with about 15-20 songs, no more."),
-            HumanMessage(content=f"""
-            {self.prompt}
-            
-            Do not make up any songs or artists. Use real songs and artists only.
-        
-            Return a valid JSON response ONLY, strictly in this format:
-            {{
-                "playlist": [
-                    {{"title": "Song 1", "artist": "Artist 1"}},
-                    {{"title": "Song 2", "artist": "Artist 2"}}
-                ],
-                description: "A generic description of the playlist noting key songs, artists and genres and why the songs were chosen."
-            }}
-            No extra text before or after the JSON response.
-            """),
-        ]
+        SystemMessage(content="You are a highly knowledgeable music expert with deep familiarity with global music trends across different genres and time periods."),
+        HumanMessage(content=f"""
+        Generate a playlist with 30 songs, based on the following user preferences and prompt.
 
+        **User Preferences (Persistent)**
+        - Preferred Language: {language}
+        - Preferred Time Period: {time_period}
+        - General Listening Preference: {listening_pref}
+        - Favorite Artists: {artists}
+        
+
+        **User Prompt for Playlist Generation**
+        {self.prompt}
+
+        **Requirements for the Response**
+        - Do NOT make up any songs or artists. Only use real, existing music.
+        - Ensure the playlist reflects the user’s preferences while staying relevant to the provided prompt.
+        - If a song features multiple artists, only list the main artist and the most relevant collaborator.
+        - Return ONLY valid JSON in this format:     
+        {{
+            "playlist": [
+                {{"title": "Song 1", "artist": "Artist 1"}},
+                {{"title": "Song 2", "artist": "Artist 2"}}
+            ],
+            "description": "A meaningful description of the playlist, mentioning key artists, genres, and why these songs were selected based on the user's preferences and prompt."
+        }}
+           
+        - The response must be **pure JSON** with no additional text or explanations.
+        """),
+    ]
+        
         # Send query
         response = self.llm.invoke(messages)
-
+        
         # Parse response
         try:
             playlist_json = json.loads(response.content) if response.content else {"playlist": []}
