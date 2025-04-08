@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import JSONResponse, RedirectResponse
 from utils import spotify
 from utils.firebase import db
 from database.models.user import User
@@ -40,15 +40,28 @@ def get_token(code: str = None):
             )
             user.save()
             
-        response = JSONResponse(content={"user": user.to_dict(), "message": "User logged in successfully"})
-        response.set_cookie(key="access_token", value=access_token)
-        response.set_cookie(key="refresh_token", value=refresh_token)
-        
+        response = RedirectResponse(url="http://localhost:3000/search")
+        response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="Lax", secure=True)
+        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="Lax", secure=True)
+
         return response
         
     
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+    
+@router.get("/me")
+def get_current_user(request: Request):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    sp_auth = spotify.get_spotify_client(token)
+    user_data = sp_auth.me()
+    user = User.get_by_id(user_data["id"])
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user.to_dict()
 
 
 @router.get("/logout")
