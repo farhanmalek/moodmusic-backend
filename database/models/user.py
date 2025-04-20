@@ -21,7 +21,7 @@ class User:
             return User(
                 id=data["id"],
                 username=data["username"],
-                quiz_answers=data.get("quiz_answers", []),
+                quiz_answers=data.get("quiz_answers", {}),
             )
         except KeyError as e:
             print(f"Missing key in user data: {e}")

@@ -41,8 +41,8 @@ def get_token(code: str = None):
             user.save()
             
         response = RedirectResponse(url="http://localhost:3000/search")
-        response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="Lax", secure=True)
-        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="Lax", secure=True)
+        response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="None", secure=True)
+        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="None", secure=True)
 
         return response
         
@@ -76,9 +76,11 @@ def get_current_user(request: Request):
 
 @router.get("/logout")
 def logout():
+    
     response = JSONResponse(content={"message": "User logged out"})
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
+    
     return response
 
     
