@@ -13,7 +13,7 @@ class QuizResponse(BaseModel):
 
 router = APIRouter()
 
-@router.post("/")
+@router.post("/create")
 def create_quiz(quiz: QuizResponse):
     # check if user exists
     user_id = quiz.user_id
@@ -33,4 +33,4 @@ def create_quiz(quiz: QuizResponse):
     )
     quiz_dict = quiz_obj.to_dict()
     user_ref.update({"quiz_answers": quiz_dict})
-    return {"message": "Quiz created successfully"}
+    return {"status_code": 200}
