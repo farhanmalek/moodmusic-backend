@@ -27,7 +27,7 @@ class PlaylistInputTracks(BaseModel):
 router = APIRouter()
 
 # Process query string, feed into langchain, get list of tracks.
-@router.post("/search")
+@router.get("/search")
 def show_playlist(prompt: str, request: Request, response: Response):
     access_token = request.cookies.get("access_token")
     refresh_token = request.cookies.get("refresh_token")
