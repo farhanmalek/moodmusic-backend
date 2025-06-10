@@ -9,7 +9,8 @@ from typing import Optional
 import base64
 from utils.ai_model import AIModel
 from database.models.user import User
-   
+import aiohttp
+import asyncio   
 class Song(BaseModel):
     title: str
     artist: str
@@ -32,9 +33,37 @@ class CreatePlaylistRequest(BaseModel):
    
 router = APIRouter()
 
+async def fetch_search_data(session, query):
+    try:
+        params = {
+            "q": query,
+            "type": "track",
+            "limit": 1
+        }
+        async with session.get("https://api.spotify.com/v1/search", params=params) as response:
+            if response.status == 200:
+                data = await response.json()
+                return {
+                    "query": query,
+                    "status": "success",
+                    "tracks": data.get("tracks", {}).get("items", [])
+                }
+            else:
+                return {
+                    "query": query,
+                    "status": "error",
+                    "error": f"HTTP {response.status}"
+                }
+    except Exception as e:
+        return {
+            "query": query,
+            "status": "error",
+            "error": str(e)
+        }
+
 # Process query string, feed into langchain, get list of tracks.
 @router.get("/search")
-def show_playlist(prompt: str, request: Request, response: Response):
+async def show_playlist(prompt: str, request: Request, response: Response):
     access_token = request.cookies.get("access_token")
     refresh_token = request.cookies.get("refresh_token")
     
@@ -77,28 +106,35 @@ def show_playlist(prompt: str, request: Request, response: Response):
     gen_description = playlist_tracks["description"]
         
     playlist_tracks = []
+    search_queries = []
     
     for track in gen_playlist:
         search_query = f"track:{track['title']} artist:{track['artist']}"
+        search_queries.append(search_query)
         
-        try:
-            searched_track = sp.search(q=search_query, limit=1, type="track")  
-            
-        except spotipy.exceptions.SpotifyException as e:
-            raise HTTPException(status_code=400, detail="Error searching for track")
-      
-        if not searched_track:
-            continue
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
         
-        if searched_track and searched_track["tracks"]["items"]:
-            track_model = {
-                "name": searched_track["tracks"]["items"][0]["name"],
-                "artist": searched_track["tracks"]["items"][0]["artists"][0]["name"],
-                "album": searched_track["tracks"]["items"][0]["album"]["name"],
-                "image": searched_track["tracks"]["items"][0]["album"]["images"][2]["url"],
-                "uri": searched_track["tracks"]["items"][0]["uri"]
-            }
-            playlist_tracks.append(track_model) 
+    async with aiohttp.ClientSession(headers=headers) as session:
+        tasks = [fetch_search_data(session, query) for query in search_queries]
+        
+        results = await asyncio.gather(*tasks)
+        
+        for result in results:
+            if result.get("status") == "success":
+                track_model = {
+                    "name": result["tracks"][0]["name"],
+                    "artist": result["tracks"][0]["artists"][0]["name"],
+                    "album": result["tracks"][0]["album"]["name"],
+                    "image": result["tracks"][0]["album"]["images"][2]["url"],
+                    "uri": result["tracks"][0]["uri"]
+                }
+                playlist_tracks.append(track_model)
+            else:
+                continue
+
     
     return JSONResponse(content={"songs": playlist_tracks, "description": gen_description})
 
