@@ -61,7 +61,6 @@ class AIModel:
                 {{"title": "Song 1", "artist": "Artist 1"}},
                 {{"title": "Song 2", "artist": "Artist 2"}}
             ],
-            "description": "A meaningful description of the playlist, mentioning key artists, genres, and why these songs were selected based on the user's preferences and prompt."
         }}
            
         - The response must be **pure JSON** with no additional text or explanations.

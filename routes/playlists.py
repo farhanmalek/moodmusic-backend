@@ -103,7 +103,6 @@ async def show_playlist(prompt: str, request: Request, response: Response):
         raise HTTPException(status_code=400, detail="Error getting playlist from AI model")
       
     gen_playlist = playlist_tracks["playlist"]
-    gen_description = playlist_tracks["description"]
         
     playlist_tracks = []
     search_queries = []
@@ -124,19 +123,23 @@ async def show_playlist(prompt: str, request: Request, response: Response):
         
         for result in results:
             if result.get("status") == "success":
+                tracks = result.get("tracks", [])
+                if not tracks:
+                    continue  # Skip if no tracks returned
+
+                track = tracks[0]  # Safe now because we checked if it's empty
                 track_model = {
-                    "name": result["tracks"][0]["name"],
-                    "artist": result["tracks"][0]["artists"][0]["name"],
-                    "album": result["tracks"][0]["album"]["name"],
-                    "image": result["tracks"][0]["album"]["images"][2]["url"],
-                    "uri": result["tracks"][0]["uri"]
+                    "name": track["name"],
+                    "artist": track["artists"][0]["name"],
+                    "album": track["album"]["name"],
+                    "image": track["album"]["images"][2]["url"] if len(track["album"]["images"]) > 2 else None,
+                    "uri": track["uri"]
                 }
                 playlist_tracks.append(track_model)
-            else:
-                continue
+
 
     
-    return JSONResponse(content={"songs": playlist_tracks, "description": gen_description})
+    return JSONResponse(content={"songs": playlist_tracks})
 
 # create the actual paylist
 @router.post("/create")
