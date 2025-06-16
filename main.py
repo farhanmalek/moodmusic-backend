@@ -3,7 +3,7 @@ from routes import auth, quiz, playlists
 from fastapi.middleware.cors import CORSMiddleware
 
 
-app = FastAPI()
+app = FastAPI(title="MoodMusic API")
 
 origins = [
     "http://localhost:3000",
@@ -26,6 +26,10 @@ app.include_router(playlists.router, prefix="/playlists", tags=["playlists"])
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"status": "healthy", "message": "MoodMusic API is running"}
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
 
 
