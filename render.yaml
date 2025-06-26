@@ -7,7 +7,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        value: https://localhost:3000  # Update this with your frontend URL
+        value: https://localhost:3000
       - key: PORT
         value: 8000
       # Firebase Configuration
@@ -16,7 +16,35 @@ services:
       - key: FIREBASE_PRIVATE_KEY_ID
         value: 44f9be7f678baf9c2a0dab8e26ba0a243f5c5f4b
       - key: FIREBASE_PRIVATE_KEY
-        value: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCWr0Q+Uy78xrRx\nIEOIFJV2B/dRuEGnx6M8qUdFQP9Lezz4ImaX0EDDqTtB24RWbaHLcwmHiDsa9jrD\nr82BmAAFYR5aHYXRUWJyiv6ZiVAMgtwHh+pM8M1nPXlXsNWQidSbkU6XgLsKyBfP\n/52FO7gArqzO/V3IUhFEfNNlYXUIm5QpRhyzLSOHWs8RlMVLAWUOhWp87uurbt6Y\nbUhRBYdEpl3iHQAEhfj2Ynj5iojO/Ib4cvFJKxrTYhsy7600txxKWa/J2DTwSiB8\nIO65EoTbnNT89cfQn4wvEdHHRdtD0VhYjie8ZAMAe2ZEnbBjitQe7np+sm31xJkx\nEFLHkqqNAgMBAAECggEAFgV9vfUGsirw/nJmZCoL8MC3yIHa2IQQy2H62DhoRvX3\nAlV2tFubR20BS73i0IW7pkHE5AGJD8bp7iTQbg7Se/bGSomzf5R7BH3jOPmMERQD\nx3b5yy5K+npNtD7T60h1YZniCDqoOypkboGvGeRRHwpoF2UIUmkJ/H4Yn+GXCr+G\nb/KuxhGpr85HZXPXftgwRQO1BwXC8HYV5copVwi5ysSC/lR7geVtJkqjYNNxkbNi\nNr25UrMX6hBKlObEMr3RDVpDJxLLuONr9K4AQxwBNGy8pnmys9YWp2F/lH3+pOBq\nXkQC4Z00wpdw2DdFkhhbLjwhaz4Kf8dYVAnjN49paQKBgQDPnbkm0bSKwy+fhyyF\nJb0WhzRzzHAd1+QKTlw+z/fBoeoOunSJ/5+BG/IsVP4jvew/SP5OKh2chi2DVdto\nQM9ReQz6UYjmUN7nTb3uS76jL4XVThJVLa9jBSoGSkXWRmUPtU/AS+3qBTyTf3KW\n7tkJi3jxqP7c/3hbiovleDHlOQKBgQC5zQoJrFmC3qTxSJTm8MYJqCjgUya6QUoR\n0LQlIS0uyvzI9iFs+z8PF2D/2IHF4WoXJ/8kpnSW2rOEUCnNotEtvgo6XMK6C/rd\n+v7Uv+KeB9nJyTGH26skHpanjv/y85k/gv4CyhLHBFB8Z+VPXvq9XOrxSXNl07Hy\ncHI7ONej9QKBgE6eSkuR440cRn9hX5F37feG8WzcQKR8aUUh0TqT5Bz15Dz5jEHp\ng4wPehAhiy8br0dzq6ELv7TS9o8iRvheemM+tJRhpbaZbx8lyENheWowB7zzWGva\n5exYO0awf2uZspFVNkL6Pbh9jSfJfin7fkJoBz9zoDctonT/rOQTNMm5AoGBAIxr\nk9x/rx6jGdFo43AuI92Eg3AWJ7y4Pzx7mMo+6qDktGtE6TouIBhNuPdjL6DXnZBm\noAOY8aBZJTcoRo+tL538dEprdJebGjvNx+4OHz0D/ers7UwaDpu7qmx0PKfmxrkj\nTMna4poafqGm+70isSmQIde9hUM93My3gv2TFhZJAoGAUseGP/CIneuBsbWIZxJa\nvcsXHw4w9IpBF6goFjzyUWQr5ZtODQtHQKfKgASHdRWAKXMlAhUd0WmlCSTo/0/C\nCG+qohTpJP6KQwgtvnpoqolNTTEx3tKSrPFovCCY5jUUCJgDwPLT5Oe2EUMwm4Ms\ncnE3fUSGs46SUBuS1JrzTkE=\n-----END PRIVATE KEY-----\n"
+        value: |
+          -----BEGIN PRIVATE KEY-----
+          MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCWr0Q+Uy78xrRx
+          IEOIFJV2B/dRuEGnx6M8qUdFQP9Lezz4ImaX0EDDqTtB24RWbaHLcwmHiDsa9jrD
+          r82BmAAFYR5aHYXRUWJyiv6ZiVAMgtwHh+pM8M1nPXlXsNWQidSbkU6XgLsKyBfP
+          /52FO7gArqzO/V3IUhFEfNNlYXUIm5QpRhyzLSOHWs8RlMVLAWUOhWp87uurbt6Y
+          bUhRBYdEpl3iHQAEhfj2Ynj5iojO/Ib4cvFJKxrTYhsy7600txxKWa/J2DTwSiB8
+          IO65EoTbnNT89cfQn4wvEdHHRdtD0VhYjie8ZAMAe2ZEnbBjitQe7np+sm31xJkx
+          EFLHkqqNAgMBAAECggEAFgV9vfUGsirw/nJmZCoL8MC3yIHa2IQQy2H62DhoRvX3
+          AlV2tFubR20BS73i0IW7pkHE5AGJD8bp7iTQbg7Se/bGSomzf5R7BH3jOPmMERQD
+          x3b5yy5K+npNtD7T60h1YZniCDqoOypkboGvGeRRHwpoF2UIUmkJ/H4Yn+GXCr+G
+          b/KuxhGpr85HZXPXftgwRQO1BwXC8HYV5copVwi5ysSC/lR7geVtJkqjYNNxkbNi
+          Nr25UrMX6hBKlObEMr3RDVpDJxLLuONr9K4AQxwBNGy8pnmys9YWp2F/lH3+pOBq
+          XkQC4Z00wpdw2DdFkhhbLjwhaz4Kf8dYVAnjN49paQKBgQDPnbkm0bSKwy+fhyyF
+          Jb0WhzRzzHAd1+QKTlw+z/fBoeoOunSJ/5+BG/IsVP4jvew/SP5OKh2chi2DVdto
+          QM9ReQz6UYjmUN7nTb3uS76jL4XVThJVLa9jBSoGSkXWRmUPtU/AS+3qBTyTf3KW
+          7tkJi3jxqP7c/3hbiovleDHlOQKBgQC5zQoJrFmC3qTxSJTm8MYJqCjgUya6QUoR
+          0LQlIS0uyvzI9iFs+z8PF2D/2IHF4WoXJ/8kpnSW2rOEUCnNotEtvgo6XMK6C/rd
+          +v7Uv+KeB9nJyTGH26skHpanjv/y85k/gv4CyhLHBFB8Z+VPXvq9XOrxSXNl07Hy
+          cHI7ONej9QKBgE6eSkuR440cRn9hX5F37feG8WzcQKR8aUUh0TqT5Bz15Dz5jEHp
+          g4wPehAhiy8br0dzq6ELv7TS9o8iRvheemM+tJRhpbaZbx8lyENheWowB7zzWGva
+          5exYO0awf2uZspFVNkL6Pbh9jSfJfin7fkJoBz9zoDctonT/rOQTNMm5AoGBAIxr
+          k9x/rx6jGdFo43AuI92Eg3AWJ7y4Pzx7mMo+6qDktGtE6TouIBhNuPdjL6DXnZBm
+          oAOY8aBZJTcoRo+tL538dEprdJebGjvNx+4OHz0D/ers7UwaDpu7qmx0PKfmxrkj
+          TMna4poafqGm+70isSmQIde9hUM93My3gv2TFhZJAoGAUseGP/CIneuBsbWIZxJa
+          vcsXHw4w9IpBF6goFjzyUWQr5ZtODQtHQKfKgASHdRWAKXMlAhUd0WmlCSTo/0/C
+          CG+qohTpJP6KQwgtvnpoqolNTTEx3tKSrPFovCCY5jUUCJgDwPLT5Oe2EUMwm4Ms
+          cnE3fUSGs46SUBuS1JrzTkE=
+          -----END PRIVATE KEY-----
       - key: FIREBASE_CLIENT_EMAIL
         value: firebase-adminsdk-fbsvc@mood-music-2eeeb.iam.gserviceaccount.com
       - key: FIREBASE_CLIENT_ID
