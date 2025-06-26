@@ -7,7 +7,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        value: https://your-frontend-url.com  # Update this with your frontend URL
+        value: https://localhost:3000  # Update this with your frontend URL
       - key: PORT
         value: 8000
       # Firebase Configuration
