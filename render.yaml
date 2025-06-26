@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: moodmusic-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: FRONTEND_URL
+        value: https://your-frontend-url.com  # Update this with your frontend URL
+      - key: PORT
+        value: 8000 
