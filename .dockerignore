@@ -9,4 +9,5 @@ env/
 venv/
 .env
 *.log
-.cache 
+.cache
+mood-music-2eeeb-firebase-adminsdk-fbsvc-44f9be7f67.json 
