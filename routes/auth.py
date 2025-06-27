@@ -40,7 +40,7 @@ def get_token(code: str = None):
             )
             user.save()
             
-        response = RedirectResponse(url="http://localhost:3000/search")
+        response = RedirectResponse(url="https://moodmusic-one.vercel.app/search")
         response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="None", secure=True)
         response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="None", secure=True)
 

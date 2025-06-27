@@ -14,6 +14,8 @@ origins = [
     FRONTEND_URL,
     "http://localhost:3000",
     "http://localhost:3000/",
+    "https://moodmusic-one.vercel.app/",
+    "https://moodmusic-one.vercel.app"
 ]
 
 app.add_middleware(

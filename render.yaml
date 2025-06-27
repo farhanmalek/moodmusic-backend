@@ -7,7 +7,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        value: https://localhost:3000
+        value: https://moodmusic-one.vercel.app/
       - key: PORT
         value: 8000
       # Firebase Configuration
